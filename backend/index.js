@@ -1,6 +1,7 @@
 var cors = require(`cors`);
 const express = require(`express`);
 const bodyParser = require(`body-parser`);
+const dotEnv = require("dotenv").config();
 
 //create express app
 const app = express();
@@ -14,6 +15,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //parse requrests of content-type - application/json
 app.use(bodyParser.json());
+
+//checking db connection
+const dbConnEstablish = require("./config/db.config");
 
 //define a root route
 app.get(`/`, (req, res) => {
