@@ -7,6 +7,7 @@ const UserAccount = function (userAccount) {
     this.last_name = userAccount.last_name;
     this.user_name = userAccount.user_name;
     this.password = userAccount.password;
+    this.user_role = userAccount.user_role;
     this.is_active = userAccount.is_active ? userAccount.is_active : 1;
     this.created_at = new Date();
     this.updated_at = null;
@@ -26,6 +27,23 @@ UserAccount.create = function (newUser, result) {
 /* */
 
 //READ USER ACCOUNTS MODELS
+UserAccount.findByUsername = function (user_name, result) {
+    dbConn.query("SELECT id FROM users_accounts WHERE user_name = ? LIMIT 1", [user_name], function (err, rows) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, rows.length > 0 ? rows[0] : null);
+        }
+    });
+};
+
+UserAccount.login = function (user_name, password, result) {
+
+};
+
+UserAccount.logout = function (accessToken, refreshToken, result) {
+
+};
 
 /* */
 

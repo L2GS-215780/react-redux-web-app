@@ -11,17 +11,17 @@ function generateRefreshToken(payload) {
     return jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 }
 
-function veriftyAccessToken(token) {
+function verifyAccessToken(token) {
     return jwt.verify(token, ACCESS_TOKEN_SECRET);
 }
 
-function veriftyRefreshToken(token) {
+function verifyRefreshToken(token) {
     return jwt.verify(token, REFRESH_TOKEN_SECRET);
 }
 
 module.exports = {
     generateAccessToken,
     generateRefreshToken,
-    veriftyAccessToken,
-    veriftyRefreshToken
+    verifyAccessToken,
+    verifyRefreshToken
 }

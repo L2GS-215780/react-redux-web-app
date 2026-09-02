@@ -1,11 +1,13 @@
 var cors = require(`cors`);
 const express = require(`express`);
 const bodyParser = require(`body-parser`);
+const cookieParser = require("cookie-parser");
 const dotEnv = require("dotenv").config();
 
 //create express app
 const app = express();
 app.use(cors());
+app.use(cookieParser());
 
 //setup server port
 const port = process.env.PORT || 3000;
