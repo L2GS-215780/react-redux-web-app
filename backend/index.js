@@ -19,6 +19,10 @@ app.use(bodyParser.json());
 //checking db connection
 const dbConnEstablish = require("./config/db.config");
 
+// User Account API
+const UserAccountAPI = require("./src/routes/user.accounts.route");
+app.use("/api/v1/user-accounts", UserAccountAPI);
+
 //define a root route
 app.get(`/`, (req, res) => {
     res.send("Backend Development");
