@@ -28,17 +28,19 @@ UserAccount.create = function (newUser, result) {
 
 //READ USER ACCOUNTS MODELS
 UserAccount.findByUsername = function (user_name, result) {
-    dbConn.query("SELECT id FROM users_accounts WHERE user_name = ? LIMIT 1", [user_name], function (err, rows) {
+    dbConn.query("SELECT * FROM users_accounts WHERE user_name = ? LIMIT 1", [user_name], function (err, rows) {
         if (err) {
             result(err, null);
+        } else if (rows.length === 0) {
+            result(null, null);
         } else {
-            result(null, rows.length > 0 ? rows[0] : null);
+            result(null, rows[0]);
         }
     });
 };
 
 UserAccount.login = function (user_name, password, result) {
-
+    
 };
 
 UserAccount.logout = function (accessToken, refreshToken, result) {

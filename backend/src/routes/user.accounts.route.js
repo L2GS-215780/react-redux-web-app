@@ -9,8 +9,8 @@ router.post('/create-account/', UserAccount.create);
 /* */
 
 //READ USER ACCOUNTS ROUTES
-router.post('/login-user', UserAccount.login);
-router.post('/logout-user', UserAccount.logout);
+router.post('/login-account', UserAccount.login);
+router.post('/logout-account', authMiddleware, UserAccount.logout);
 
 /* */
 
