@@ -19,7 +19,7 @@ UserAccount.create = function (newUser, result) {
         if (err) {
             result(err, null);
         } else {
-            result(null, res.insertId);
+            result(null, res);
         }
     });
 };
@@ -27,18 +27,6 @@ UserAccount.create = function (newUser, result) {
 /* */
 
 //READ USER ACCOUNTS MODELS
-UserAccount.findByUsername = function (user_name, result) {
-    dbConn.query("SELECT * FROM users_accounts WHERE user_name = ? LIMIT 1", [user_name], function (err, rows) {
-        if (err) {
-            result(err, null);
-        } else if (rows.length === 0) {
-            result(null, null);
-        } else {
-            result(null, rows[0]);
-        }
-    });
-};
-
 UserAccount.login = function (user_name, password, result) {
     
 };
