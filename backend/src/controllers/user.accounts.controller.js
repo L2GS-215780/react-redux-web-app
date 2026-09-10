@@ -162,6 +162,60 @@ exports.logout = function (req, res) {
     });
 };
 
+exports.retrieveAll = function (req, res) {
+    UserAccount.retrieveAll(function (err, userAccounts) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        const decryptUserAccounts = userAccounts.map(users => ({
+            id: 27,
+            first_name: decryptField(users.first_name),
+            last_name: decryptField(users.last_name),
+            user_name: users.user_name,
+            user_role: users.user_role,
+            is_active: users.is_active,
+            created_at: users.created_at,
+            updated_at: users.updated_at
+        }));
+
+        return res.status(201).json({
+            error: false,
+            message: "Retrieve all user accounts",
+            data: decryptUserAccounts
+        });
+    });
+};
+
+exports.findById = function (req, res) {
+    UserAccount.findById(req.params.id, function (err, userAccount) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        const decryptUserAccount = userAccount.map(users => ({
+            id: 27,
+            first_name: decryptField(users.first_name),
+            last_name: decryptField(users.last_name),
+            user_name: users.user_name,
+            user_role: users.user_role,
+            is_active: users.is_active,
+            created_at: users.created_at,
+            updated_at: users.updated_at
+        }));
+
+        return res.status(201).json({
+            error: false,
+            message: "Retrieve user account",
+            data: decryptUserAccount
+        });
+    });
+};
+
+exports.findBySearchAndFilter = function (req, res) {
+    
+};
+
 /* */
 
 //UPDATE USER ACCOUNTS CONTROLLERS

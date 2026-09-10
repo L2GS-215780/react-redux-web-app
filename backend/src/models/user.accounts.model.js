@@ -1,6 +1,7 @@
 'use strict'
 
 const dbConn = require('../../config/db.config');
+const { param } = require('../routes/user.accounts.route');
 
 const UserAccount = function (userAccount) {
     this.first_name = userAccount.first_name;
@@ -28,7 +29,7 @@ UserAccount.create = function (newUser, result) {
 
 //READ USER ACCOUNTS MODELS
 UserAccount.login = function (user_name, result) {
-    dbConn.query("SELECT * FROM users_accounts where user_name = ? LIMIT 1", [user_name], function (err, rows) {
+    dbConn.query("SELECT * FROM users_accounts WHERE user_name = ? LIMIT 1", [user_name], function (err, rows) {
         if (err) {
             result(err, null);
         } else if (rows.length === 0) {
@@ -41,6 +42,30 @@ UserAccount.login = function (user_name, result) {
 
 UserAccount.logout = function (accessToken, refreshToken, result) {
 
+};
+
+UserAccount.retrieveAll = function (result) {
+    dbConn.query("SELECT * FROM users_accounts", function (err, res) {
+        if (err) {
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+UserAccount.findById = function (id, result) {
+    dbConn.query("SELECT * FROM users_accounts WHERE id = ? LIMIT 1", [id], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+UserAccount.findBySearchAndFilter = function (filters, result) {
+    
 };
 
 /* */

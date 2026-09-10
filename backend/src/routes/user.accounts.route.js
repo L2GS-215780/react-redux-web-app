@@ -9,8 +9,11 @@ router.post('/create-account/', UserAccount.create);
 /* */
 
 //READ USER ACCOUNTS ROUTES
-router.post('/login-account', UserAccount.login);
-router.post('/logout-account', authMiddleware, UserAccount.logout);
+router.post('/login-account/', UserAccount.login);
+router.post('/logout-account/', authMiddleware, UserAccount.logout);
+router.get('/retrieve-accounts/', authMiddleware, UserAccount.retrieveAll);
+router.get('/retrieve-account/:id', authMiddleware, UserAccount.findById);
+router.get('/search-filter-account/', authMiddleware, UserAccount.findBySearchAndFilter);
 
 /* */
 
