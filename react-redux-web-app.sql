@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 02, 2026 at 09:04 AM
+-- Generation Time: Sep 10, 2026 at 09:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -60,10 +60,10 @@ CREATE TABLE `users_accounts` (
 --
 
 INSERT INTO `users_accounts` (`id`, `first_name`, `last_name`, `user_name`, `password`, `user_role`, `is_active`, `created_at`, `updated_at`) VALUES
-(14, 'U2FsdGVkX18W4FUXgJFeGD1u7Oz2YNj5Iz5G1ciuIKg=', 'U2FsdGVkX19HIzGnbRFPF5Q1th7rh+f5odUPxEd6ncM=', 'Lorenz215780', '$2b$10$sHDL9UjMGszfVvJ6ItXQv.SDKH51bQ/sGvEE8cfy32rPm3KztpKd.', 'Admin', 1, '2026-09-02 06:06:34', '2026-09-02 06:06:34'),
-(15, 'U2FsdGVkX1/kzhIwd87AtkYdw/QWr2R1JlySpjfplSs=', 'U2FsdGVkX1/Vlh7c2UEOoMEDrthOeXEYLrNK389Doi0=', 'user123', '$2b$10$f3FcUsFvYlKx9iND.9FjcuYDIToDwufrf1z/Jy1oRTgPrTRNb76bS', 'User', 1, '2026-09-02 07:00:31', '2026-09-02 07:00:31'),
-(16, 'U2FsdGVkX18jcRwJLQzVvcsG/QF2jEvbowUl7UDqa4g=', 'U2FsdGVkX1/Km7uo61dkC90gomQOM7kDuRYktMPZkPQ=', 'user456', '$2b$10$Sf1L4JvAPUnwKxa0Z/oQnumfZxY/eTot7J9gnFV9AsUdW3Y4bsUmu', 'User', 1, '2026-09-02 07:01:20', '2026-09-02 07:01:20'),
-(17, 'U2FsdGVkX1/ZJogSnIQr2kYWdx/WOjtNF5Bs8ARf3+A=', 'U2FsdGVkX1+Y6deGrm6QYqi6Z3qLsrYlbYyDh5RCxh8=', 'user789', '$2b$10$TRRy6veIYJfEHUTyT6iwMeO9zOOhY9nLXD.xC7p/gpoFNrcO1yvL2', 'User', 1, '2026-09-02 07:01:36', '2026-09-02 07:01:36');
+(23, 'U2FsdGVkX1/4zX03IOAtpMJIWmtLAIradtQVYxnHeYU=', 'U2FsdGVkX18NTEktyKr8U7Lu55LzBXP5ifLybjFPzSA=', 'Lorenz215780', '$2b$10$VZVt6KQOc5iuR2no42EK8er79Cht1/t94jREPPaUbQvWt2iIMGVXK', 'Admin', 1, '2026-09-08 06:52:57', '2026-09-08 06:52:57'),
+(24, 'U2FsdGVkX19HTK0vdvSFZPbxkOP2yCCUy3e4AJCnbeE=', 'U2FsdGVkX19f8l/6MYLOzELEDPDlIp5Jv05ixV7supg=', 'John123', '$2b$10$O/tAcp4Rz2N63zgw/j628.WQwguGwtchM3mOJUIhoazINt06p36I.', 'User', 1, '2026-09-10 03:19:24', '2026-09-10 03:19:24'),
+(25, 'U2FsdGVkX1+h5xpfoCt8uZx1oN+ZldZZjhP/swtflBw=', 'U2FsdGVkX1+gnT90TqRqizq8ggX4QlRApPtqwTq1sgA=', 'Jane123', '$2b$10$qL2z6ZA0sXhqGpT1DX989.tFhrsSrqfIpbwPfmbXlBwoFlfTCT0.6', 'User', 1, '2026-09-10 03:19:51', '2026-09-10 03:19:51'),
+(27, 'U2FsdGVkX19SIqKTZ8fJ+/saBvLplaqOjFae/lVeKx8=', 'U2FsdGVkX1+KWoci+crKUfIz4Xw8lONyb4DkFGsCP2A=', 'Remy123', '$2b$10$ztP5pSIiYsSiZEJ0tL751eM/DPdegNkDwBZ2FoYNVyTlcl9gcyDRO', 'User', 1, '2026-09-10 03:31:12', '2026-09-10 03:31:12');
 
 --
 -- Indexes for dumped tables
@@ -96,7 +96,7 @@ ALTER TABLE `message_board`
 -- AUTO_INCREMENT for table `users_accounts`
 --
 ALTER TABLE `users_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Constraints for dumped tables
