@@ -169,7 +169,7 @@ exports.retrieveAll = function (req, res) {
         }
 
         const decryptUserAccounts = userAccounts.map(users => ({
-            id: 27,
+            id: users.id,
             first_name: decryptField(users.first_name),
             last_name: decryptField(users.last_name),
             user_name: users.user_name,
@@ -179,7 +179,7 @@ exports.retrieveAll = function (req, res) {
             updated_at: users.updated_at
         }));
 
-        return res.status(201).json({
+        return res.status(200).json({
             error: false,
             message: "Retrieve all user accounts",
             data: decryptUserAccounts
@@ -193,8 +193,53 @@ exports.findById = function (req, res) {
             return res.status(500).send(err);
         }
 
-        const decryptUserAccount = userAccount.map(users => ({
-            id: 27,
+        if (!userAccount) {
+            return res.status(404).json({
+                error: true,
+                message: "No user account found"
+            });
+        }
+
+        const decryptUserAccount = {
+            id: userAccount.id,
+            first_name: decryptField(userAccount.first_name),
+            last_name: decryptField(userAccount.last_name),
+            user_name: userAccount.user_name,
+            user_role: userAccount.user_role,
+            is_active: userAccount.is_active,
+            created_at: userAccount.created_at,
+            updated_at: userAccount.updated_at
+        };
+
+        return res.status(200).json({
+            error: false,
+            message: "Retrieve user account",
+            data: decryptUserAccount
+        });
+    });
+};
+
+exports.findBySearchAndFilter = function (req, res) {
+    const {
+        user_role,
+        is_active,
+        created_at,
+        search_name
+    } = req.query;
+
+    const filters = {
+        user_role,
+        is_active: is_active !== undefined ? Number(is_active) : undefined,
+        created_at: created_at || undefined
+    };
+
+    UserAccount.findBySearchAndFilter(filters, function (err, userAccounts) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        let decryptUserAccounts = userAccounts.map(users => ({
+            id: users.id,
             first_name: decryptField(users.first_name),
             last_name: decryptField(users.last_name),
             user_name: users.user_name,
@@ -204,16 +249,22 @@ exports.findById = function (req, res) {
             updated_at: users.updated_at
         }));
 
-        return res.status(201).json({
+        if (search_name && search_name.trim() !== "") {
+            const keywords = search_name.toLowerCase().trim();
+
+            decryptUserAccounts = decryptUserAccounts.filter(users =>
+                (users.first_name && users.first_name.toLowerCase().includes(keywords)) ||
+                (users.last_name && users.last_name.toLowerCase().includes(keywords)) ||
+                (users.user_name && users.user_name.toLowerCase().includes(keywords))
+            );
+        };
+
+        return res.status(200).json({
             error: false,
-            message: "Retrieve user account",
-            data: decryptUserAccount
+            message: "Retrieve user accounts",
+            data: decryptUserAccounts
         });
     });
-};
-
-exports.findBySearchAndFilter = function (req, res) {
-    
 };
 
 /* */
@@ -223,5 +274,64 @@ exports.findBySearchAndFilter = function (req, res) {
 /* */
 
 //DELETE USER ACCOUNTS CONTROLLERS
+exports.activateUserAccount = function (req, res) {
+    UserAccount.activateUserAccount(req.params.id, function (err, userAccount) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        if (!userAccount) {
+            return res.status(404).json({
+                error: true,
+                message: "No user account found"
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "User account activated successfully",
+        });
+    });
+};
+
+exports.deactivateUserAccount = function (req, res) {
+    UserAccount.deactivateUserAccount(req.params.id, function (err, userAccount) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        if (!userAccount) {
+            return res.status(404).json({
+                error: true,
+                message: "No user account found"
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "User account deactivated successfully",
+        });
+    });
+};
+
+exports.delete = function (req, res) {
+    UserAccount.delete(req.params.id, function (err, userAccount) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        if (!userAccount) {
+            return res.status(404).json({
+                error: true,
+                message: "No user account found"
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "User account deleted successfully",
+        });
+    });
+};
 
 /* */

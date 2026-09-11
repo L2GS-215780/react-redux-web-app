@@ -1,7 +1,6 @@
 'use strict'
 
 const dbConn = require('../../config/db.config');
-const { param } = require('../routes/user.accounts.route');
 
 const UserAccount = function (userAccount) {
     this.first_name = userAccount.first_name;
@@ -47,16 +46,6 @@ UserAccount.logout = function (accessToken, refreshToken, result) {
 UserAccount.retrieveAll = function (result) {
     dbConn.query("SELECT * FROM users_accounts", function (err, res) {
         if (err) {
-            result(null, err);
-        } else {
-            result(null, res);
-        }
-    });
-};
-
-UserAccount.findById = function (id, result) {
-    dbConn.query("SELECT * FROM users_accounts WHERE id = ? LIMIT 1", [id], function (err, res) {
-        if (err) {
             result(err, null);
         } else {
             result(null, res);
@@ -64,8 +53,44 @@ UserAccount.findById = function (id, result) {
     });
 };
 
+UserAccount.findById = function (id, result) {
+    dbConn.query("SELECT * FROM users_accounts WHERE id = ? LIMIT 1", [id], function (err, rows) {
+        if (err) {
+            result(err, null);
+        } else if (rows.length === 0) {
+            result(null, null);
+        } else {
+            result(null, rows[0]);
+        }
+    });
+};
+
 UserAccount.findBySearchAndFilter = function (filters, result) {
-    
+    let sql = "SELECT * FROM users_accounts WHERE 1=1";
+    const params = [];
+
+    if (filters.user_role) {
+        sql += " AND user_role = ?";
+        params.push(filters.user_role);
+    }
+
+    if (filters.is_active !== undefined) {
+        sql += " AND is_active = ?";
+        params.push(filters.is_active);
+    }
+
+    if (filters.created_at) {
+        sql += " AND DATE(created_at) = ?";
+        params.push(filters.created_at);
+    }
+
+    dbConn.query(sql, params, function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
 };
 
 /* */
@@ -75,6 +100,35 @@ UserAccount.findBySearchAndFilter = function (filters, result) {
 /* */
 
 //DELETE USER ACCOUNTS MODELS
+UserAccount.activateUserAccount = function (id, result) {
+    dbConn.query("UPDATE users_accounts SET is_active = ?, updated_at = ? WHERE id = ?", [1, new Date(), id], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+UserAccount.deactivateUserAccount = function (id, result) {
+    dbConn.query("UPDATE users_accounts SET is_active = ?, updated_at = ? WHERE id = ?", [0, new Date(), id], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+UserAccount.delete = function (id, result) {
+    dbConn.query("DELETE * FROM users_accounts WHERE id = ?", [id], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
 
 /* */
 

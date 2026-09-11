@@ -22,7 +22,9 @@ router.get('/search-filter-account/', authMiddleware, UserAccount.findBySearchAn
 /* */
 
 //DELETE USER ACCOUNTS ROUTES
-
+router.put('/activate-account/:id', authMiddleware, roleMiddleware(["Admin"]), UserAccount.activateUserAccount);
+router.put('/deactivate-account/:id', authMiddleware, roleMiddleware(["Admin"]), UserAccount.deactivateUserAccount);
+router.delete('/delete-account/:id', authMiddleware, roleMiddleware(["Admin"]), UserAccount.delete);
 /* */
 
 module.exports = router;
