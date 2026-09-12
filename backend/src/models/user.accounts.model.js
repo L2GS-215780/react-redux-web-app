@@ -101,7 +101,7 @@ UserAccount.findBySearchAndFilter = function (filters, result) {
 
 //DELETE USER ACCOUNTS MODELS
 UserAccount.activateUserAccount = function (id, result) {
-    dbConn.query("UPDATE users_accounts SET is_active = ?, updated_at = ? WHERE id = ?", [1, new Date(), id], function (err, res) {
+    dbConn.query("UPDATE users_accounts SET is_active = ?, updated_at = ? WHERE id = ? LIMIT 1", [1, new Date(), id], function (err, res) {
         if (err) {
             result(err, null);
         } else {
@@ -111,7 +111,7 @@ UserAccount.activateUserAccount = function (id, result) {
 };
 
 UserAccount.deactivateUserAccount = function (id, result) {
-    dbConn.query("UPDATE users_accounts SET is_active = ?, updated_at = ? WHERE id = ?", [0, new Date(), id], function (err, res) {
+    dbConn.query("UPDATE users_accounts SET is_active = ?, updated_at = ? WHERE id = ?  LIMIT 1", [0, new Date(), id], function (err, res) {
         if (err) {
             result(err, null);
         } else {
@@ -121,13 +121,31 @@ UserAccount.deactivateUserAccount = function (id, result) {
 };
 
 UserAccount.delete = function (id, result) {
-    dbConn.query("DELETE * FROM users_accounts WHERE id = ?", [id], function (err, res) {
+    dbConn.query("DELETE FROM users_accounts WHERE id = ?  LIMIT 1", [id], function (err, res) {
         if (err) {
             result(err, null);
         } else {
             result(null, res);
         }
     });
+};
+
+UserAccount.activateUserAccounts = function (ids, result) {
+    
+};
+
+UserAccount.deactivateUserAccounts = function (ids, result) {
+    dbConn.query(`UPDATE users_accounts SET is_active = ?, updated_at = ? WHERE id IN (${ids.map(() => '?').join(',')})`, [0, new Date(), ...ids], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+UserAccount.deletes = function (ids, result) {
+
 };
 
 /* */

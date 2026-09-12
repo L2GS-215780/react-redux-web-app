@@ -275,12 +275,12 @@ exports.findBySearchAndFilter = function (req, res) {
 
 //DELETE USER ACCOUNTS CONTROLLERS
 exports.activateUserAccount = function (req, res) {
-    UserAccount.activateUserAccount(req.params.id, function (err, userAccount) {
+    UserAccount.activateUserAccount(req.params.id, function (err, userAffectedRows) {
         if (err) {
             return res.status(500).send(err);
         }
 
-        if (!userAccount) {
+        if (userAffectedRows.affectedRows === 0) {
             return res.status(404).json({
                 error: true,
                 message: "No user account found"
@@ -295,12 +295,12 @@ exports.activateUserAccount = function (req, res) {
 };
 
 exports.deactivateUserAccount = function (req, res) {
-    UserAccount.deactivateUserAccount(req.params.id, function (err, userAccount) {
+    UserAccount.deactivateUserAccount(req.params.id, function (err, userAffectedRows) {
         if (err) {
             return res.status(500).send(err);
         }
 
-        if (!userAccount) {
+        if (userAffectedRows.affectedRows === 0) {
             return res.status(404).json({
                 error: true,
                 message: "No user account found"
@@ -315,12 +315,12 @@ exports.deactivateUserAccount = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-    UserAccount.delete(req.params.id, function (err, userAccount) {
+    UserAccount.delete(req.params.id, function (err, userAffectedRows) {
         if (err) {
             return res.status(500).send(err);
         }
 
-        if (!userAccount) {
+        if (userAffectedRows.affectedRows === 0) {
             return res.status(404).json({
                 error: true,
                 message: "No user account found"
@@ -332,6 +332,25 @@ exports.delete = function (req, res) {
             message: "User account deleted successfully",
         });
     });
+};
+
+exports.activateUserAccounts = function (req, res) {
+    
+};
+
+exports.deactivateUserAccounts = function (req, res) {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            error: true,
+            message: "Please provide all required IDs"
+        });
+    } else {
+
+    }
+};
+
+exports.deletes = function (req, res) {
+    
 };
 
 /* */
