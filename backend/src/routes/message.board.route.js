@@ -16,7 +16,12 @@ router.get('/search-filter-message-board/', authMiddleware, MessageBoard.findByS
 
 /* */
 //DELETE MESSAGE BOARD ROUTES
-
+router.put('/archive-message-board/:id', authMiddleware, MessageBoard.archive);
+router.put('/unarchive-message-board/:id', authMiddleware, MessageBoard.unarchive);
+router.delete('/delete-message-board/:id', authMiddleware, MessageBoard.delete);
+router.patch('/archive-message-boards/', authMiddleware, MessageBoard.archives);
+router.patch('/unarchive-message-boards/', authMiddleware, MessageBoard.unarchives);
+router.delete('/delete-message-boards/', authMiddleware, MessageBoard.deletes);
 /* */
 
 module.exports = router;

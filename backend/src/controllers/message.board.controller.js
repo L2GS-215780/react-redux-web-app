@@ -99,8 +99,6 @@ exports.findById = function (req, res) {
             });
         }
 
-
-
         const user_full_name = [
             decryptField(messageBoard.first_name) || "",
             decryptField(messageBoard.last_name) || ""
@@ -188,5 +186,175 @@ exports.findBySearchAndFilter = function (req, res) {
 
 /* */
 //DELETE MESSAGE BOARD CONTROLLER
+exports.archive = function (req, res) {
+    MessageBoard.archive(req.params.id, function (err, messageBoardAffectedRows) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        if (messageBoardAffectedRows.affectedRows === 0) {
+            return res.status(404).json({
+                error: true,
+                message: "No message board found"
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Message board archived successfully",
+        });
+    });
+};
+
+exports.unarchive = function (req, res) {
+    MessageBoard.unarchive(req.params.id, function (err, messageBoardAffectedRows) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        if (messageBoardAffectedRows.affectedRows === 0) {
+            return res.status(404).json({
+                error: true,
+                message: "No message board found"
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Message board unarchived successfully",
+        });
+    });
+};
+
+exports.delete = function (req, res) {
+    MessageBoard.delete(req.params.id, function (err, messageBoardAffectedRows) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        if (messageBoardAffectedRows.affectedRows === 0) {
+            return res.status(404).json({
+                error: true,
+                message: "No message board found"
+            });
+        }
+
+        return res.status(200).json({
+            error: false,
+            message: "Message board deleted successfully",
+        });
+    });
+};
+
+exports.archives = function (req, res) {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            error: true,
+            message: "Please provide all required IDs"
+        });
+    } else {
+        try {
+            const ids = req.body.ids;
+
+            MessageBoard.archives(ids, function (err, result) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        error: true,
+                        message: "No message board found"
+                    });
+                }
+
+                return res.status(200).json({
+                    error: false,
+                    message: "Message board archived successfully",
+                });
+            });
+
+        } catch (error) {
+            return res.status(500).send({
+                error: true,
+                message: error.message
+            });
+        }
+    }
+};
+
+exports.unarchives = function (req, res) {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            error: true,
+            message: "Please provide all required IDs"
+        });
+    } else {
+        try {
+            const ids = req.body.ids;
+
+            MessageBoard.unarchives(ids, function (err, result) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        error: true,
+                        message: "No message board found"
+                    });
+                }
+
+                return res.status(200).json({
+                    error: false,
+                    message: "Message board unarchived successfully",
+                });
+            });
+
+        } catch (error) {
+            return res.status(500).send({
+                error: true,
+                message: error.message
+            });
+        }
+    }
+};
+
+exports.deletes = function (req, res) {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            error: true,
+            message: "Please provide all required IDs"
+        });
+    } else {
+        try {
+            const ids = req.body.ids;
+
+            MessageBoard.deletes(ids, function (err, result) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        error: true,
+                        message: "No message board found"
+                    });
+                }
+
+                return res.status(200).json({
+                    error: false,
+                    message: "Message board deleted successfully",
+                });
+            });
+
+        } catch (error) {
+            return res.status(500).send({
+                error: true,
+                message: error.message
+            });
+        }
+    }
+};
 
 /* */

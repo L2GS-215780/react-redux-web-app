@@ -105,7 +105,65 @@ MessageBoard.findBySearchAndFilter = function (filters, result) {
 /* */
 
 //DELETE MESSAGE BOARD MODELS
+MessageBoard.archive = function (id, result) {
+    dbConn.query("UPDATE message_board SET is_deleted = ?, updated_at = ? WHERE id = ?  LIMIT 1", [1, new Date(), id], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
 
+MessageBoard.unarchive = function (id, result) {
+    dbConn.query("UPDATE message_board SET is_deleted = ?, updated_at = ? WHERE id = ?  LIMIT 1", [0, new Date(), id], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+MessageBoard.delete = function (id, result) {
+    dbConn.query("DELETE FROM message_board WHERE id = ?  LIMIT 1", [id], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+MessageBoard.archives = function (ids, result) {
+    dbConn.query(`UPDATE message_board SET is_deleted = ?, updated_at = ? WHERE id IN (${ids.map(() => '?').join(',')})`, [1, new Date(), ...ids], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+MessageBoard.unarchives = function (ids, result) {
+    dbConn.query(`UPDATE message_board SET is_deleted = ?, updated_at = ? WHERE id IN (${ids.map(() => '?').join(',')})`, [0, new Date(), ...ids], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
+
+MessageBoard.deletes = function (ids, result) {
+    dbConn.query(`DELETE FROM message_board WHERE id IN (${ids.map(() => '?').join(',')})`, ids, function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
 /* */
 
 module.exports = MessageBoard;
