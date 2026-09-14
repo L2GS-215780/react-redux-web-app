@@ -335,7 +335,39 @@ exports.delete = function (req, res) {
 };
 
 exports.activateUserAccounts = function (req, res) {
-    
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            error: true,
+            message: "Please provide all required IDs"
+        });
+    } else {
+        try {
+            const ids = req.body.ids;
+
+            UserAccount.activateUserAccounts(ids, function (err, result) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        error: true,
+                        message: "No matching user accounts found"
+                    });
+                }
+
+                return res.status(200).json({
+                    error: false,
+                    message: "User accounts activated successfully",
+                });
+            });
+        } catch (error) {
+            return res.status(500).send({
+                error: true,
+                message: error.message
+            });
+        }
+    }
 };
 
 exports.deactivateUserAccounts = function (req, res) {
@@ -345,12 +377,69 @@ exports.deactivateUserAccounts = function (req, res) {
             message: "Please provide all required IDs"
         });
     } else {
+        try {
+            const ids = req.body.ids;
 
+            UserAccount.deactivateUserAccounts(ids, function (err, result) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        error: true,
+                        message: "No matching user accounts found"
+                    });
+                }
+
+                return res.status(200).json({
+                    error: false,
+                    message: "User accounts deactivated successfully",
+                });
+            });
+        } catch (error) {
+            return res.status(500).send({
+                error: true,
+                message: error.message
+            });
+        }
     }
 };
 
 exports.deletes = function (req, res) {
-    
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            error: true,
+            message: "Please provide all required IDs"
+        });
+    } else {
+        try {
+            const ids = req.body.ids;
+
+            UserAccount.deletes(ids, function (err, result) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        error: true,
+                        message: "No matching user accounts found"
+                    });
+                }
+
+                return res.status(200).json({
+                    error: false,
+                    message: "User account deleted successfully",
+                });
+            });
+        } catch (error) {
+            return res.status(500).send({
+                error: true,
+                message: error.message
+            });
+        }
+    }
 };
 
 /* */

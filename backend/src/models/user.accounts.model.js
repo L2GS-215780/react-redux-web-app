@@ -131,7 +131,13 @@ UserAccount.delete = function (id, result) {
 };
 
 UserAccount.activateUserAccounts = function (ids, result) {
-    
+    dbConn.query(`UPDATE users_accounts SET is_active = ?, updated_at = ? WHERE id IN (${ids.map(() => '?').join(',')})`, [1, new Date(), ...ids], function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
 };
 
 UserAccount.deactivateUserAccounts = function (ids, result) {
@@ -145,7 +151,13 @@ UserAccount.deactivateUserAccounts = function (ids, result) {
 };
 
 UserAccount.deletes = function (ids, result) {
-
+    dbConn.query(`DELETE FROM users_accounts WHERE id IN (${ids.map(() => '?').join(',')})`, ids, function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
 };
 
 /* */

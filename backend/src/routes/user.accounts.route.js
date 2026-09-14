@@ -25,8 +25,8 @@ router.get('/search-filter-account/', authMiddleware, UserAccount.findBySearchAn
 router.put('/activate-account/:id', authMiddleware, roleMiddleware(["Admin"]), UserAccount.activateUserAccount);
 router.put('/deactivate-account/:id', authMiddleware, roleMiddleware(["Admin"]), UserAccount.deactivateUserAccount);
 router.delete('/delete-account/:id', authMiddleware, roleMiddleware(["Admin"]), UserAccount.delete);
-router.post('/activate-accounts/', authMiddleware, roleMiddleware(["Admin"]), UserAccount.activateUserAccounts);
-router.post('/deactivate-accounts/', authMiddleware, roleMiddleware(["Admin"]), UserAccount.deactivateUserAccounts);
+router.patch('/activate-accounts/', authMiddleware, roleMiddleware(["Admin"]), UserAccount.activateUserAccounts);
+router.patch('/deactivate-accounts/', authMiddleware, roleMiddleware(["Admin"]), UserAccount.deactivateUserAccounts);
 router.delete('/delete-accounts/', authMiddleware, roleMiddleware(["Admin"]), UserAccount.deletes);
 /* */
 
