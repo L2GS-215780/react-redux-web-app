@@ -74,6 +74,7 @@ exports.retrieveAll = function (req, res) {
                 full_name: user_full_name,
                 title: decryptField(messages.title),
                 description: decryptField(messages.description),
+                is_deleted: messages.is_deleted,
                 created_at: messages.created_at,
                 updated_at: messages.updated_at
             };
@@ -112,6 +113,7 @@ exports.findById = function (req, res) {
             full_name: user_full_name,
             title: decryptField(messageBoard.title),
             description: decryptField(messageBoard.description),
+            is_deleted: messageBoard.is_deleted,
             created_at: messageBoard.created_at,
             updated_at: messageBoard.updated_at
         };
@@ -161,6 +163,7 @@ exports.findBySearchAndFilter = function (req, res) {
                 full_name: user_full_name,
                 title: decryptField(mb.title),
                 description: decryptField(mb.description),
+                is_deleted: mb.is_deleted,
                 created_at: mb.created_at,
                 updated_at: mb.updated_at
             };

@@ -6,7 +6,7 @@ const MessageBoard = function (messageBoard) {
     this.user_id_fk = messageBoard.user_id_fk;
     this.title = messageBoard.title;
     this.description = messageBoard.description;
-    this.is_deleted = messageBoard.is_deleted ? userAccount.is_deleted : 0;
+    this.is_deleted = messageBoard.is_deleted ? messageBoard.is_deleted : 0;
     this.created_at = new Date();
     this.updated_at = null;
 };

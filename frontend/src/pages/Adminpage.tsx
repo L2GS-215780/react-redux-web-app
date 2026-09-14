@@ -4,17 +4,25 @@ import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { logoutUser } from "../feature/auth/authSlice"
 import { fetchAllUsers, searchAndFilterUsers, activateUser, deactivateUser, deleteUser } from "../feature/users/usersSlice"
+import {
+    fetchAllMessageBoards,
+    searchAndFilterMessageBoards,
+    deleteMessageBoard,
+} from "../feature/message board/messageBoardSlice"
 
 function Adminpage() {
     const { first_name, last_name, user_name, user_role } = useAppSelector((state) => state.auth)
     const { accounts, loading, error } = useAppSelector((state) => state.users)
+    const { messages, loading: messagesLoading, error: messagesError } = useAppSelector((state) => state.messageBoard)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
     const [searchTerm, setSearchTerm] = useState("")
+    const [messageSearchTerm, setMessageSearchTerm] = useState("")
 
     useEffect(() => {
         dispatch(fetchAllUsers())
+        dispatch(fetchAllMessageBoards())
     }, [dispatch])
 
     const handleLogout = async (e: React.MouseEvent) => {
@@ -47,6 +55,22 @@ function Adminpage() {
         }
     }
 
+    const handleMessageSearch = (e: React.MouseEvent) => {
+        e.preventDefault()
+
+        if (messageSearchTerm.trim() === "") {
+            dispatch(fetchAllMessageBoards())
+        } else {
+            dispatch(searchAndFilterMessageBoards({ search_message_board: messageSearchTerm.trim() }))
+        }
+    }
+
+    const handleDeleteMessage = (id: number) => {
+        if (window.confirm("Delete this message? This cannot be undone.")) {
+            dispatch(deleteMessageBoard(id))
+        }
+    }
+
     return (
         <div>
             Hello <Link to="/userprofile" className="underline"> {first_name} {last_name}, {user_name}, ({user_role}) </Link>
@@ -55,16 +79,8 @@ function Adminpage() {
                 Logout Account
             </a>
             <br /><br />
-            <ul>
-                <li>
-                    <Link to="/adminpage" className="underline">Manage Users</Link>
-                </li>
-                <li>
-                    <Link to="/adminpage" className="hover:underline cursor-pointer">Manage Message Board</Link>
-                </li>
-            </ul>
-            <br />
 
+            <h1>Manage Users</h1>
             <label htmlFor="searchuser">Search User</label>
             <input
                 type="text"
@@ -91,7 +107,6 @@ function Adminpage() {
                 <table className="border-collapse border">
                     <thead>
                         <tr>
-                            <th className="border px-2">ID</th>
                             <th className="border px-2">First Name</th>
                             <th className="border px-2">Last Name</th>
                             <th className="border px-2">Username</th>
@@ -104,7 +119,6 @@ function Adminpage() {
                     <tbody>
                         {accounts.map((account) => (
                             <tr key={account.id}>
-                                <td className="border px-2">{account.id}</td>
                                 <td className="border px-2">{account.first_name}</td>
                                 <td className="border px-2">{account.last_name}</td>
                                 <td className="border px-2">{account.user_name}</td>
@@ -130,6 +144,58 @@ function Adminpage() {
                                 <td className="border px-2">
                                     <button
                                         onClick={() => handleDelete(account.id)}
+                                        className="border bg-gray-300 hover:bg-gray-400 cursor-pointer rounded"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+
+            <br /><h1>Manage Message Board</h1>
+            <label htmlFor="searchmessage">Search Message Board</label>
+            <input
+                type="text"
+                name="searchmessage"
+                id="searchmessage"
+                className="border"
+                value={messageSearchTerm}
+                onChange={(e) => setMessageSearchTerm(e.target.value)}
+            />
+            <button
+                type="button"
+                onClick={handleMessageSearch}
+                className="border bg-gray-300 hover:bg-gray-400 cursor-pointer rounded"
+            >
+                Search
+            </button>
+            <br />
+
+            {messagesLoading && <p>Loading messages...</p>}
+            {messagesError && <p className="text-red-600">{messagesError}</p>}
+
+            {!messagesLoading && !messagesError && (
+                <table className="border-collapse border">
+                    <thead>
+                        <tr>
+                            <th className="border px-2">Username</th>
+                            <th className="border px-2">Title</th>
+                            <th className="border px-2">Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {messages.map((msg) => (
+                            <tr key={msg.id}>
+                                <td className="border px-2">{msg.user_name}</td>
+                                <td className="border px-2">{msg.title}</td>
+                                <td className="border px-2">{msg.description}</td>
+                                <td className="border px-2">
+                                    <button
+                                        onClick={() => handleDeleteMessage(msg.id)}
                                         className="border bg-gray-300 hover:bg-gray-400 cursor-pointer rounded"
                                     >
                                         Delete
