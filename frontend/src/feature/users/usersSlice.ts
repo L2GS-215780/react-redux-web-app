@@ -40,6 +40,34 @@ export const fetchAllUsers = createAsyncThunk(
     }
 )
 
+export const searchAndFilterUsers = createAsyncThunk(
+    'users/searchAndFilter',
+    async (
+        filters: { search_name?: string; user_role?: string; is_active?: number; created_at?: string },
+        { rejectWithValue }
+    ) => {
+        const params = new URLSearchParams()
+
+        if (filters.search_name) params.append('search_name', filters.search_name)
+        if (filters.user_role) params.append('user_role', filters.user_role)
+        if (filters.is_active !== undefined) params.append('is_active', String(filters.is_active))
+        if (filters.created_at) params.append('created_at', filters.created_at)
+
+        const res = await fetch(
+            `http://localhost:3000/api/v1/user-accounts/search-filter-account/?${params.toString()}`,
+            { credentials: 'include' }
+        )
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            return rejectWithValue(data.message || 'Failed to search users')
+        }
+
+        return data.data as UserAccount[]
+    }
+)
+
 export const activateUser = createAsyncThunk(
     'users/activate',
     async (id: number, { rejectWithValue }) => {
@@ -109,6 +137,18 @@ const usersSlice = createSlice({
                 state.accounts = action.payload
             })
             .addCase(fetchAllUsers.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload as string
+            })
+            .addCase(searchAndFilterUsers.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(searchAndFilterUsers.fulfilled, (state, action) => {
+                state.loading = false
+                state.accounts = action.payload
+            })
+            .addCase(searchAndFilterUsers.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload as string
             })

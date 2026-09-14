@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../hooks"
 import { useNavigate } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { logoutUser } from "../feature/auth/authSlice"
-import { fetchAllUsers, activateUser, deactivateUser, deleteUser } from "../feature/users/usersSlice"
+import { fetchAllUsers, searchAndFilterUsers, activateUser, deactivateUser, deleteUser } from "../feature/users/usersSlice"
 
 function Adminpage() {
     const { first_name, last_name, user_name, user_role } = useAppSelector((state) => state.auth)
     const { accounts, loading, error } = useAppSelector((state) => state.users)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+
+    const [searchTerm, setSearchTerm] = useState("")
 
     useEffect(() => {
         dispatch(fetchAllUsers())
@@ -35,6 +37,16 @@ function Adminpage() {
         }
     }
 
+    const handleSearchAndFilter = (e: React.MouseEvent) => {
+        e.preventDefault()
+
+        if (searchTerm.trim() === "") {
+            dispatch(fetchAllUsers())
+        } else {
+            dispatch(searchAndFilterUsers({ search_name: searchTerm.trim() }))
+        }
+    }
+
     return (
         <div>
             Hello <Link to="/userprofile" className="underline"> {first_name} {last_name}, {user_name}, ({user_role}) </Link>
@@ -51,7 +63,25 @@ function Adminpage() {
                     <Link to="/adminpage" className="hover:underline cursor-pointer">Manage Message Board</Link>
                 </li>
             </ul>
-            <br /><br />
+            <br />
+
+            <label htmlFor="searchuser">Search User</label>
+            <input
+                type="text"
+                name="searchuser"
+                id="searchuser"
+                className="border"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+                type="button"
+                onClick={handleSearchAndFilter}
+                className="border bg-gray-300 hover:bg-gray-400 cursor-pointer rounded"
+            >
+                Search
+            </button>
+            <br />
 
             {/* Manage User Table */}
             {loading && <p>Loading users...</p>}
