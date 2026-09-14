@@ -53,6 +53,7 @@ exports.create = function (req, res) {
     }
 };
 /* */
+
 //READ MESSAGE BOARD CONTROLLER
 exports.retrieveAll = function (req, res) {
     MessageBoard.retrieveAll(function (err, messageBoards) {
@@ -182,9 +183,51 @@ exports.findBySearchAndFilter = function (req, res) {
     });
 };
 /* */
-//UPDATE MESSAGE BOARD CONTROLLER
 
+//UPDATE MESSAGE BOARD CONTROLLER
+exports.update = function (req, res) {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            error: true,
+            message: "Please provide all required fields"
+        });
+    } else {
+        try {
+            const message_board = req.body;
+
+            const encryptedMessageBoard = {};
+
+            if (message_board.title) encryptedMessageBoard.title = encryptField(message_board.title);
+            if (message_board.description) encryptedMessageBoard.description = encryptField(message_board.description);
+
+            MessageBoard.update(req.params.id, encryptedMessageBoard, function (err, result) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        error: true,
+                        message: "No message board found"
+                    });
+                }
+
+                return res.status(200).json({
+                    error: false,
+                    message: "Message board updated successfully",
+                    result: result
+                });
+            });
+        } catch (error) {
+            return res.status(500).send({
+                error: true,
+                message: error.message
+            });
+        }
+    }
+};
 /* */
+
 //DELETE MESSAGE BOARD CONTROLLER
 exports.archive = function (req, res) {
     MessageBoard.archive(req.params.id, function (err, messageBoardAffectedRows) {

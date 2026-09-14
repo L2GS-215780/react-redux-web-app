@@ -101,6 +101,31 @@ MessageBoard.findBySearchAndFilter = function (filters, result) {
 /* */
 
 //UPDATE MESSAGE BOARD MODELS
+MessageBoard.update = function (id, messageBoard, result) {
+    let sql = "UPDATE message_board SET updated_at = ?";
+    let params = [new Date()];
+
+    if (messageBoard.title) {
+        sql += ", title = ?";
+        params.push(messageBoard.title);
+    }
+
+    if (messageBoard.description) {
+        sql += ", description = ?";
+        params.push(messageBoard.description);
+    }
+
+    sql += " WHERE id = ?";
+    params.push(id);
+
+    dbConn.query(sql, params, function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
 
 /* */
 
