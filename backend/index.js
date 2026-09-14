@@ -6,7 +6,10 @@ const dotEnv = require("dotenv").config();
 
 //create express app
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
 app.use(cookieParser());
 
 //setup server port

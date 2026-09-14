@@ -4,6 +4,7 @@ const UserAccount = require("../models/user.accounts.model");
 const { hashPassword, comparePassword } = require("../utils/encryption-utils/bcrypt-utils");
 const { encryptField, decryptField } = require("../utils/encryption-utils/crypto-utils");
 const { generateAccessToken, generateRefreshToken } = require("../utils/encryption-utils/jwt-utils");
+const jwt = require('jsonwebtoken');
 
 //CREATE USER ACCOUNTS CONTROLLERS
 exports.create = async function (req, res) {
@@ -71,8 +72,11 @@ exports.create = async function (req, res) {
                         message: "User account created successfully",
                         data: {
                             id: userInsertId,
+                            first_name: new_user_account.first_name,
+                            last_name: new_user_account.last_name,
                             user_name: new_user_account.user_name,
-                            user_role: new_user_account.user_role
+                            user_role: new_user_account.user_role,
+                            is_active: new_user_account.is_active
                         }
                     });
                 });
@@ -120,6 +124,13 @@ exports.login = function (req, res) {
                 });
             }
 
+            if (user.is_active !== 1) {
+                return res.status(403).json({
+                    error: true,
+                    message: "This account has been deactivated"
+                });
+            }
+
             const payload = {
                 id: user.id,
                 user_role: user.user_role
@@ -144,7 +155,15 @@ exports.login = function (req, res) {
 
             return res.status(200).json({
                 error: false,
-                message: "Login successful"
+                message: "Login successful",
+                data: {
+                    id: user.id,
+                    first_name: decryptField(user.first_name),
+                    last_name: decryptField(user.last_name),
+                    user_name: user.user_name,
+                    user_role: user.user_role,
+                    is_active: user.is_active,
+                }
             });
         } catch (error) {
             return res.status(500).send({
@@ -174,13 +193,48 @@ exports.logout = function (req, res) {
     });
 };
 
+exports.me = function (req, res) {
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+        return res.status(401).json({ error: true, message: "Not authenticated" });
+    }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    } catch (err) {
+        return res.status(401).json({ error: true, message: "Invalid or expired token" });
+    }
+
+    UserAccount.findById(decoded.id, function (err, user) {
+        if (err) return res.status(500).send(err);
+        if (!user) return res.status(404).json({ error: true, message: "User not found" });
+
+        return res.status(200).json({
+            error: false,
+            message: "Session restored",
+            data: {
+                id: user.id,
+                first_name: decryptField(user.first_name),
+                last_name: decryptField(user.last_name),
+                user_name: user.user_name,
+                user_role: user.user_role,
+                is_active: user.is_active,
+            }
+        });
+    });
+};
+
 exports.retrieveAll = function (req, res) {
     UserAccount.retrieveAll(function (err, userAccounts) {
         if (err) {
             return res.status(500).send(err);
         }
 
-        const decryptUserAccounts = userAccounts.map(users => ({
+        const filteredAccounts = userAccounts.filter(u => u.user_role !== "Admin");
+
+        const decryptUserAccounts = filteredAccounts.map(users => ({
             id: users.id,
             first_name: decryptField(users.first_name),
             last_name: decryptField(users.last_name),
@@ -316,7 +370,15 @@ exports.update = async function (req, res) {
             return res.status(200).json({
                 error: false,
                 message: "User account updated successfully",
-                result: result
+                result: result,
+                data: {
+                    id: req.params.id,
+                    first_name: user_account.first_name,
+                    last_name: user_account.last_name,
+                    user_name: user_account.user_name,
+                    user_role: user_account.user_role,
+                    is_active: user_account.is_active
+                }
             });
         });
     };
