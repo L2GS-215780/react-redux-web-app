@@ -24,6 +24,9 @@ const dbConnEstablish = require("./config/db.config");
 // User Account API
 const UserAccountAPI = require("./src/routes/user.accounts.route");
 app.use("/api/v1/user-accounts", UserAccountAPI);
+// Message Board API
+const MessageBoardAPI = require("./src/routes/message.board.route");
+app.use("/api/v1/message-boards", MessageBoardAPI);
 
 //define a root route
 app.get(`/`, (req, res) => {

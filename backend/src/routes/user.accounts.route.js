@@ -6,6 +6,7 @@ const { roleMiddleware } = require("../middleware/roleMiddleware");
 
 //CREATE USER ACCOUNTS ROUTES
 router.post('/create-account/', UserAccount.create);
+
 /* */
 
 //READ USER ACCOUNTS ROUTES
