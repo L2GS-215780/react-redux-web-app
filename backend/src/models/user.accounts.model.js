@@ -53,6 +53,18 @@ UserAccount.retrieveAll = function (result) {
     });
 };
 
+UserAccount.checkExistingUser = function (user_name, result) {
+    dbConn.query("SELECT * FROM users_accounts WHERE user_name = ? LIMIT 1", [user_name], function (err, rows) {
+        if (err) {
+            result(err, null);
+        } else if (rows.length === 0) {
+            result(null, null);
+        } else {
+            result(null, rows[0]);
+        }
+    });
+};
+
 UserAccount.findById = function (id, result) {
     dbConn.query("SELECT * FROM users_accounts WHERE id = ? LIMIT 1", [id], function (err, rows) {
         if (err) {
@@ -96,6 +108,41 @@ UserAccount.findBySearchAndFilter = function (filters, result) {
 /* */
 
 //UPDATE USER ACCOUNTS MODELS
+UserAccount.update = function (id, user, result) {
+    let sql = "UPDATE users_accounts SET updated_at = ?";
+    let params = [new Date()];
+
+    if (user.first_name) {
+        sql += ", first_name = ?";
+        params.push(user.first_name);
+    };
+
+    if (user.last_name) {
+        sql += ", last_name = ?";
+        params.push(user.last_name);
+    };
+
+    if (user.user_name) {
+        sql += ", user_name = ?";
+        params.push(user.user_name);
+    };
+
+    if (user.password) {
+        sql += ", password = ?";
+        params.push(user.password);
+    };
+
+    sql += " WHERE id = ?";
+    params.push(id);
+
+    dbConn.query(sql, params, function (err, res) {
+        if (err) {
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    });
+};
 
 /* */
 

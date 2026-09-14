@@ -18,6 +18,7 @@ router.get('/search-filter-account/', authMiddleware, UserAccount.findBySearchAn
 /* */
 
 //UPDATE USER ACCOUNTS ROUTES
+router.put('/update-account/:id', authMiddleware, UserAccount.update);
 
 /* */
 

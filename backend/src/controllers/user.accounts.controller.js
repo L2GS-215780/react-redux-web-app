@@ -27,42 +27,54 @@ exports.create = async function (req, res) {
                 is_active: 1
             };
 
-
-            UserAccount.create(encryptedUserAccount, function (err, userInsertId) {
+            UserAccount.checkExistingUser(req.body.user_name, function (err, userAccount) {
                 if (err) {
                     return res.status(500).send(err);
                 }
 
-                const payload = {
-                    id: userInsertId,
-                    user_role: new_user_account.user_role
-                };
+                if (userAccount) {
+                    return res.status(409).json({
+                        error: true,
+                        message: "User already exists"
+                    });
+                }
 
-                const accessToken = generateAccessToken(payload);
-                const refreshToken = generateRefreshToken(payload);
-
-                res.cookie("accessToken", accessToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "strict",
-                    maxAge: 24 * 60 * 60 * 1000
-                });
-
-                res.cookie("refreshToken", refreshToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "strict",
-                    maxAge: 7 * 24 * 60 * 60 * 1000
-                });
-
-                return res.status(201).json({
-                    error: false,
-                    message: "User account created successfully",
-                    data: {
-                        id: userInsertId,
-                        user_name: new_user_account.user_name,
-                        user_role: new_user_account.user_role
+                UserAccount.create(encryptedUserAccount, function (err, userInsertId) {
+                    if (err) {
+                        return res.status(500).send(err);
                     }
+
+                    const payload = {
+                        id: userInsertId,
+                        user_role: new_user_account.user_role
+                    };
+
+                    const accessToken = generateAccessToken(payload);
+                    const refreshToken = generateRefreshToken(payload);
+
+                    res.cookie("accessToken", accessToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict",
+                        maxAge: 24 * 60 * 60 * 1000
+                    });
+
+                    res.cookie("refreshToken", refreshToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: "strict",
+                        maxAge: 7 * 24 * 60 * 60 * 1000
+                    });
+
+                    return res.status(201).json({
+                        error: false,
+                        message: "User account created successfully",
+                        data: {
+                            id: userInsertId,
+                            user_name: new_user_account.user_name,
+                            user_role: new_user_account.user_role
+                        }
+                    });
                 });
             });
         } catch (error) {
@@ -270,6 +282,45 @@ exports.findBySearchAndFilter = function (req, res) {
 /* */
 
 //UPDATE USER ACCOUNTS CONTROLLERS
+exports.update = async function (req, res) {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            error: true,
+            message: "Please provide all required fields"
+        });
+    } else {
+        const user_account = req.body;
+
+        const encryptedUserAccount = {};
+
+        if (user_account.first_name) encryptedUserAccount.first_name = encryptField(user_account.first_name);
+        if (user_account.last_name) encryptedUserAccount.last_name = encryptField(user_account.last_name);
+        if (user_account.user_name) encryptedUserAccount.user_name = user_account.user_name;
+        if (user_account.password && user_account.password.trim() !== "") {
+            const hashedPassword = await hashPassword(user_account.password);
+            encryptedUserAccount.password = hashedPassword;
+        }
+
+        UserAccount.update(req.params.id, encryptedUserAccount, function (err, result) {
+            if (err) {
+                return res.status(500).send(err);
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    error: true,
+                    message: "No user account found"
+                });
+            }
+
+            return res.status(200).json({
+                error: false,
+                message: "User account updated successfully",
+                result: result
+            });
+        });
+    };
+};
 
 /* */
 
